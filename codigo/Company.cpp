@@ -93,37 +93,57 @@ void Company::shortestPathByDistance_s(){
     string station1 = chooseStation();
     string station2 = chooseStation();
     pair<double,list<int>> res = graph.dijkstra_path(stopMap[station1],stopMap[station2]);
-    showPath(res.second);
+    list<list<string>> takenLines = generateLines(res.second,graph);
+    showPath(res.second,takenLines);
     cout << endl << "The distance is: " << res.first << " km." << endl;
 }
 void Company::shortestPathByStops_s(){
     string station1 = chooseStation();
     string station2 = chooseStation();
     pair<int,list<int>> res = graph.bfs(stopMap[station1],stopMap[station2]);
-    showPath(res.second);
+    list<list<string>> takenLines = generateLines(res.second,graph);
+    showPath(res.second,takenLines);
     cout << endl << "This path only passes through " << res.first << " stations." << endl;
 }
 void Company::cheapestPath_s(){
     string station1 = chooseStation();
     string station2 = chooseStation();
     pair<int,list<int>> res = graph.dijkstra_changeZone(stopMap[station1],stopMap[station2]);
-    showPath(res.second);
+    list<list<string>> takenLines = generateLines(res.second,graph);
+    showPath(res.second,takenLines);
     cout << endl << "This paths only contains " << res.first << " different zones." << endl;
 }
 void Company::mostConvenientPath_s(){
     string station1 = chooseStation();
     string station2 = chooseStation();
-    list<string> lines = graph.getLinesByNode(stopMap[station1]);
-    for(string lineCode : lines)
-        graph.dijkstra_changeLines(stopMap[station1],stopMap[station2],lineCode);
+    vector<list<int>> paths;
+    pair<int,list<int>> res = graph.bfs(stopMap[station1],stopMap[station2]);
+    paths.push_back(res.second);
+    for(auto i : paths)
+    {
+
+    }
+
 }
 
 void Company::walkingAndBusPath_s(){
+    GraphMaker graphMaker;
     string station1 = chooseStation();
     string station2 = chooseStation();
+    double dist;
+    cout << "Max distance you want to walk:";
+    cin >> dist;
+    pair<Graph,unordered_map<string,int>> newGraph = graphMaker.generalGraph();
+    newGraph.first.addWalkEdge(dist);
+    pair<double,list<int>> res = newGraph.first.dijkstra_path(newGraph.second[station1],newGraph.second[station2]);
+    list<list<string>> takenLines = generateLines(res.second,newGraph.first);
+    showPath(res.second,takenLines);
+    cout << endl << "The distance is: " << res.first << " km." << endl;
+
 }
 
 void Company::shortestPathByDistance_p() {
+    GraphMaker graphMaker;
     pair<int,int> pos1 = choosePosition();
     pair<int,int> pos2 = choosePosition();
     list<int> initialNodes;
@@ -146,11 +166,13 @@ void Company::shortestPathByDistance_p() {
                 answer = res;
         }
     }
-    showPath(answer.second);
+    list<list<string>> takenLines = generateLines(answer.second,graph);
+    showPath(answer.second,takenLines);
     cout << endl << "The distance is: " << answer.first << " km." << endl;
 }
 
 void Company::shortestPathByStops_p() {
+    GraphMaker graphMaker;
     pair<int,int> pos1 = choosePosition();
     pair<int,int> pos2 = choosePosition();
     list<int> initialNodes;
@@ -173,10 +195,12 @@ void Company::shortestPathByStops_p() {
                 answer = res;
         }
     }
-    showPath(answer.second);
+    list<list<string>> takenLines = generateLines(answer.second,graph);
+    showPath(answer.second,takenLines);
     cout << endl << "This path only passes through " << answer.first << " stations." << endl;
 }
 void Company::cheapestPath_p() {
+    GraphMaker graphMaker;
     pair<int,int> pos1 = choosePosition();
     pair<int,int> pos2 = choosePosition();
     list<int> initialNodes;
@@ -199,7 +223,8 @@ void Company::cheapestPath_p() {
                 answer = res;
         }
     }
-    showPath(answer.second);
+    list<list<string>> takenLines = generateLines(answer.second,graph);
+    showPath(answer.second,takenLines);
     cout << endl << "This paths only contains " << answer.first << " different zones." << endl;
 }
 void Company::walkingAndBusPath_p() {
@@ -208,11 +233,18 @@ void Company::walkingAndBusPath_p() {
 void Company::mostConvenientPath_p() {
 
 }
-void Company::showPath(list<int> res){
+void Company::showPath(list<int> res,list<list<string>> lines){
     for(auto i : res)
-        cout << + " --> " + graph.getNodes()[i].code;
+        cout <<  " --> " + graph.getNodes()[i].code;
+    cout << endl;
+    for(auto l : lines){
+        for(string line : l)
+            cout << line << " ";
+        cout << endl;
+    }
 }
 void Company::run() {
+    GraphMaker graphMaker;
     pair<Graph,unordered_map<string,int>> graphInfo = graphMaker.generalGraph();
     graph = graphInfo.first;
     stopMap = graphInfo.second;
@@ -234,6 +266,21 @@ pair<int, int> Company::choosePosition() {
     cin >> longitude;
     return {latitude,longitude};
 
+}
+
+list<list<string>> Company::generateLines(list<int> stops, Graph &g) {
+    list<list<string>> lines;
+    int count = 0;
+    auto it = stops.begin();
+    while(count != stops.size()-1){
+        int scr = *it;
+        it++;
+        int dest = *it;
+        list<string> line = g.findEgde(scr,dest);
+        lines.push_back(line);
+        count++;
+    }
+    return lines;
 }
 
 

@@ -11,14 +11,13 @@
 
 class Company {
 private:
-    GraphMaker graphMaker;
     Graph graph = Graph(2487,true);
     unordered_map<string, int> stopMap;
 public:
     Company();
     void run();
 
-    void showPath(list<int> res);
+    void showPath(list<int> res,list<list<string>> lines);
     void processKey(char choice);
 
     void showMenu();
@@ -47,6 +46,8 @@ public:
     void mostConvenientPath_p();
 
     pair<int, int> choosePosition();
+
+    list<list<string>> generateLines(list<int> stops,Graph &g);
 };
 
 

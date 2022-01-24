@@ -18,6 +18,10 @@ class Graph {
         double weight; // A double weight --> distance between 2 stations
         int changeZone;
         list<string> lineCode;
+        bool operator ==(const Edge & st)
+        {
+            return dest == st.dest && weight == st.weight && changeZone == st.changeZone && lineCode.empty();
+        }
     };
 
     struct Node {
@@ -63,6 +67,12 @@ public:
     pair<int,list<int>> dijkstra_changeLines(int init,int end,string line, int changes = 0);
 
     list<string> getLinesByNode(int i);
+
+    void addWalkEdge(double d);
+
+    void deleteWalkEdge();
+
+    list<string> findEgde(int scr, int dest);
 };
 
 #endif

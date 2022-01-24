@@ -4,6 +4,7 @@
 #include <map>
 #include <queue>
 #include "graph.h"
+#include "GraphMaker.h"
 
 // Constructor: nr nodes and direction (default: undirected)
 Graph::Graph(int num, bool dir) : n(num), hasDir(dir), nodes(num+1) {
@@ -202,10 +203,7 @@ pair<int,list<int>> Graph::dijkstra_changeZone(int init, int end) {
     }
     return {nodes[end].distance,path};
 }
-pair<int,list<int>> Graph::dijkstra_changeLines(int init, int end,string line,int changes) {
 
-
-}
 void Graph::setSTCPProprieties(int i,string code,string name, string zone,double latitude,double longitude) {
     nodes[i].code = code;
     nodes[i].name = name;
@@ -222,4 +220,45 @@ list<string> Graph::getLinesByNode(int i) {
             allLines.push_back(line);
     }
     return allLines;
+}
+
+void Graph::addWalkEdge(double d) {
+    GraphMaker graphMaker;
+    int count = 0;
+    for(int i = 1; i <= n;i++){
+        for(int j = 1; j <= n; j++){
+            if(graphMaker.haversine(nodes[i].latitiude,nodes[i].longitude,nodes[j].latitiude,nodes[j].longitude) < d && i != j){
+                addEdge(i,j,graphMaker.haversine(nodes[i].latitiude,nodes[i].longitude,nodes[j].latitiude,nodes[j].longitude),"walk");
+                count ++;
+            }
+        }
+    }
+    cout << "added " << count << " walking edges" << endl;
+}
+void Graph::deleteWalkEdge(){
+    int count  = 0;
+    for(int i = 1; i <= n; i++){
+        for(auto& e : nodes[i].adj) {
+            for (auto line: e.lineCode) {
+                if (line == "walk") {
+                    e.lineCode.remove(line);
+                    count ++;
+                    break;
+                }
+            }
+            if(e.lineCode.empty()){
+                nodes[i].adj.remove(e);
+            }
+        }
+    }
+    cout << "deleted " << count << " walking edges" << endl;
+}
+
+list<string> Graph::findEgde(int scr, int dest) {
+    for(auto e : nodes[scr].adj){
+        if(e.dest == dest){
+            return e.lineCode;
+        }
+    }
+    return {};
 }

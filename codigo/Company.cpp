@@ -116,13 +116,9 @@ void Company::cheapestPath_s(){
 void Company::mostConvenientPath_s(){
     string station1 = chooseStation();
     string station2 = chooseStation();
-    vector<list<int>> paths;
-    pair<int,list<int>> res = graph.bfs(stopMap[station1],stopMap[station2]);
-    paths.push_back(res.second);
-    for(auto i : paths)
-    {
+    graph.findPath(stopMap[station1],stopMap[station2]);
 
-    }
+
 
 }
 

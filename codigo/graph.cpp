@@ -262,3 +262,37 @@ list<string> Graph::findEgde(int scr, int dest) {
     }
     return {};
 }
+int Graph::isNotVisited(int x,vector<int> &path){
+    int size = path.size();
+    for (int i = 0; i < size; i++)
+        if (path[i] == x)
+            return 0;
+    return 1;
+}
+list<int> Graph::findPath(int init,int end){
+    vector<vector<int>> paths;
+    vector<vector<int>> res;
+    vector<int> path;
+    path.push_back(init);
+    paths.push_back(path);
+    while(!path.empty())
+    {
+        path = paths[0];
+        paths.erase(paths.begin());
+        int last = path[path.size()-1];
+        if(last == end)
+        {
+            res.push_back(path);
+        }
+
+        for(auto e : nodes[last].adj)
+        {
+            if(isNotVisited(e.dest,path)){
+                vector<int> newpath(path);
+                newpath.push_back(e.dest);
+                paths.push_back(newpath);
+            }
+        }
+    }
+    return {} ;
+}

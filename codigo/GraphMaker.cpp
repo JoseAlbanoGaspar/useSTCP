@@ -3,6 +3,8 @@
 //
 
 #include <cmath>
+#include <set>
+#include <map>
 #include "GraphMaker.h"
 
 GraphMaker::GraphMaker() {
@@ -102,7 +104,6 @@ pair<Graph,unordered_map<string,int>> GraphMaker::generalGraph() {
                         g.addEdge(stopcode_nodeNr[previous], stopcode_nodeNr[line],
                                   haversine(stod(stopInfo[previous][2]), stod(stopInfo[previous][3]),
                                             stod(stopInfo[line][2]), stod(stopInfo[line][3])), lineCode);
-
                         previous = line;
                     }
                     stoplines.close();
@@ -116,6 +117,120 @@ pair<Graph,unordered_map<string,int>> GraphMaker::generalGraph() {
     return {g,stopcode_nodeNr};
 }
 
-Graph GraphMaker::zoneGraph() {
-    return Graph(0);
+GraphLine GraphMaker::lineGraph() {
+    set<pair<string,string>> nodes;
+    ifstream fileLines("dataset/lines.csv");
+    cout << "Reading Lines File" << endl;
+    if (fileLines.is_open())
+    {
+        string line;
+        getline(fileLines,line);
+        while (getline(fileLines, line))
+        {
+            stringstream string_stream(line);  // creating string stream object
+
+            string lineCode; //a gets the code of the line
+            getline( string_stream, lineCode, ',' );   //calling getline fuction
+
+
+            for(int i = 0;i < 2;i++){
+                string path = "dataset/line_" +lineCode + "_" + to_string(i) +".csv";
+                cout << "Reading " + path + " File" << endl;
+                ifstream stoplines(path);
+                if (stoplines.is_open()) {
+                    string line1, previous;
+                    getline(stoplines, line1); //skip number of stops
+                    getline(stoplines,previous);
+                    if(stoplines.peek()!=EOF){   // circular lines exist!
+                        nodes.insert({previous,lineCode});
+                        while(getline(stoplines,line1)){
+                            nodes.insert({line1,lineCode});
+                        }
+                        stoplines.close();
+                    }
+                } else {
+                    cout << "not open" << endl;
+                }
+            }
+        }
+
+    }
+    fileLines.close();
+    //=======================================================================
+    //So far we have all the nodes in the set. Now we need to build the graph
+    //=======================================================================
+    GraphLine g(nodes.size(),true);
+    int count = 1;
+    map<pair<string,string>,int> pairMap;
+    for(auto p : nodes){
+        g.setSTCPProprieties(count,p.first,p.second);
+        pairMap[p] = count;
+        count++;
+        //if(count == 5000)
+            //cout << "test" << endl;
+    }
+    //=======================================================================
+    //Adding Non-change Line Edges
+    //=======================================================================
+    ifstream fileLines1("dataset/lines.csv");
+    cout << "Reading Lines File" << endl;
+    if (fileLines1.is_open())
+    {
+        string line;
+        getline(fileLines1,line);
+        while (getline(fileLines1, line))
+        {
+            stringstream string_stream(line);  // creating string stream object
+
+            string lineCode; //a gets the code of the line
+            getline( string_stream, lineCode, ',' );   //calling getline fuction
+
+
+            for(int i = 0;i < 2;i++){
+                string path = "dataset/line_" +lineCode + "_" + to_string(i) +".csv";
+                cout << "Reading " + path + " File" << endl;
+                ifstream stoplines(path);
+                if (stoplines.is_open()) {
+                    string line1, previous;
+                    getline(stoplines, line1); //skip number of stops
+                    getline(stoplines,previous);
+                    if(stoplines.peek()!=EOF){   // circular lines exist!
+                        while(getline(stoplines,line1)){
+                            g.addEdge(pairMap[{previous,lineCode}],pairMap[{line1,lineCode}]);
+                            previous = line1;
+                        }
+                        stoplines.close();
+                    }
+                } else {
+                    cout << "not open" << endl;
+                }
+            }
+        }
+
+    }
+    fileLines.close();
+    //=======================================================================
+    //Adding Change Line Edges
+    //=======================================================================
+    ifstream file("dataset/stops.csv");
+    if (file.is_open())
+    {
+        cout << "Reading Stops File" << endl;
+        string line;
+        getline(file,line);
+        while (getline(file, line))
+        {
+            stringstream string_stream(line);  // creating string stream object
+            string a;
+            getline( string_stream, a, ',' );   //calling getline fuction
+            g.changeEdges(a);
+
+        }
+    }
+    else{
+        cout << "not open" << endl;
+    }
+    file.close();
+    return g;
 }
+

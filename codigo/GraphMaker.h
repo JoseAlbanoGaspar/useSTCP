@@ -8,12 +8,13 @@
 #include <fstream>
 #include <sstream>
 #include "graph.h"
+#include "GraphLine.h"
 
 class GraphMaker {
 public:
     GraphMaker();
     pair<Graph,unordered_map<string,int>> generalGraph();
-    Graph zoneGraph();
+    GraphLine lineGraph();
 
     double haversine(double lat1, double lon1, double lat2, double lon2);
 };

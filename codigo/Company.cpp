@@ -2,6 +2,7 @@
 // Created by josea on 16/01/2022.
 //
 
+
 #include "Company.h"
 
 Company::Company() {
@@ -241,16 +242,19 @@ void Company::showPath(list<int> res,list<list<string>> lines){
 }
 void Company::run() {
     GraphMaker graphMaker;
-    pair<Graph,unordered_map<string,int>> graphInfo = graphMaker.generalGraph();
+    /*pair<Graph,unordered_map<string,int>> graphInfo = graphMaker.generalGraph();
     graph = graphInfo.first;
     stopMap = graphInfo.second;
-    showMainMenu();
-
-    /*pair<int,list<int>> res =  graph.dijkstra_changeZone(stopMap["FEUP2"],stopMap["PVC1"]);
-    showPath(res.second);
+    showMainMenu();*/
+    GraphLine g = graphMaker.lineGraph();
+    string station1 = chooseStation();
+    string station2 = chooseStation();
+    pair<int,list<int>> res = g.howManyChanges(station1,station2);
+    for(auto i : res.second){
+        cout <<  " --(" + g.getNodes()[i].line + ")-> " + g.getNodes()[i].stop ;
+    }
     cout << endl;
-    cout << "Passa por " <<res.first << " zonas";*/
-
+    cout << endl << "This paths only contains " << res.first << " changes of lines" << endl;
 }
 
 pair<int, int> Company::choosePosition() {

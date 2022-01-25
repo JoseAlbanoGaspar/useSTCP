@@ -106,7 +106,7 @@ void Company::shortestPathByStops_s(){
     pair<int,list<int>> res = graph.bfs(stopMap[station1],stopMap[station2]);
     list<list<string>> takenLines = generateLines(res.second,graph);
     showPath(res.second,takenLines);
-    cout << endl << "This path only passes through " << res.first << " stations." << endl;
+    cout << endl << "This path only passes through " << res.first + 1 << " stations." << endl;
 }
 void Company::cheapestPath_s(){
     string station1 = chooseStation();
@@ -114,7 +114,7 @@ void Company::cheapestPath_s(){
     pair<int,list<int>> res = graph.dijkstra_changeZone(stopMap[station1],stopMap[station2]);
     list<list<string>> takenLines = generateLines(res.second,graph);
     showPath(res.second,takenLines);
-    cout << endl << "This paths only contains " << res.first << " different zones." << endl;
+    cout << endl << "This paths only contains " << res.first + 1 << " different zones." << endl;
 }
 void Company::mostConvenientPath_s(){
     GraphMaker graphMaker;
@@ -202,7 +202,7 @@ void Company::shortestPathByStops_p() {
     }
     list<list<string>> takenLines = generateLines(answer.second,graph);
     showPath(answer.second,takenLines);
-    cout << endl << "This path only passes through " << answer.first << " stations." << endl;
+    cout << endl << "This path only passes through " << answer.first + 1<< " stations." << endl;
 }
 void Company::cheapestPath_p() {
     GraphMaker graphMaker;
@@ -230,7 +230,7 @@ void Company::cheapestPath_p() {
     }
     list<list<string>> takenLines = generateLines(answer.second,graph);
     showPath(answer.second,takenLines);
-    cout << endl << "This paths only contains " << answer.first << " different zones." << endl;
+    cout << endl << "This paths only contains " << answer.first + 1 << " different zones." << endl;
 }
 void Company::walkingAndBusPath_p() {
     GraphMaker graphMaker;

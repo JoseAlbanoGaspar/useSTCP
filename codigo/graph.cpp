@@ -27,67 +27,8 @@ void Graph::addEdge(int src, int dest, double weight,string line) {
 }
 
 
-// ----------------------------------------------------------
-// Exercicio 3: Algoritmo de Prim
-// ----------------------------------------------------------
-// TODO
-double Graph::prim(int r) {
-    for (auto& node: nodes) {
-        node.distance = std::numeric_limits<double>::max();
-        node.parent = -1;
-    }
-    nodes[r].distance = 0;
-    MinHeap<int, int> heap(n, -1);
-    for (int i = 1; i <= n; i++) {
-        heap.insert(i, nodes[i].distance);
-    }
-    double cost = 0;
-    while (heap.getSize() != 0) {
-        int u = heap.removeMin();
-        cost += nodes[u].distance;
-        for (auto e: nodes[u].adj) {
-            if (e.weight < nodes[e.dest].distance && heap.hasKey(e.dest)) {   // v --> e.dest      u-->u
-                nodes[e.dest].distance = e.weight;
-                heap.decreaseKey(e.dest,nodes[e.dest].distance);
-                nodes[e.dest].parent = u;
-            }
-        }
-    }
-    return cost;
-}
 
-// ----------------------------------------------------------
-// Exercicio 5: Algoritmo de Kruskal
-// ----------------------------------------------------------
-// TODO
-bool Graph::isInVec(double weight,int eDest,int i,vector<pair<double,pair<int,int>>>& sortedEdges){
-    for(auto e : sortedEdges)
-        if(e.first == weight && e.second.first == eDest && e.second.second == i)
-            return true;
-    return false;
-}
 
-double Graph::kruskal() {
-    DisjointSets<int> disjointSets;
-    for(int i = 0; i <= n; i++){
-        disjointSets.makeSet(i);
-    }
-    vector<pair<double,pair<int,int>>> sortedEdges;
-    for(int i = 0; i <= n ; i++)
-        for(auto e : nodes[i].adj) {
-            if(!isInVec(e.weight,e.dest,i,sortedEdges))
-                sortedEdges.push_back({e.weight,{i,e.dest}}); // Retirar os duplicados!!!
-        }
-    sort(sortedEdges.begin(),sortedEdges.end());
-    double cost = 0;
-    for(auto& e : sortedEdges){
-        if(disjointSets.find(e.second.first) != disjointSets.find(e.second.second)){
-            disjointSets.unite(e.second.first,e.second.second);
-            cost += e.first;
-        }
-    }
-    return cost;
-}
 pair<int,list<int>> Graph::bfs(int v,int destiny) {
     map<int, int> distToV;
     list<int> path;
@@ -213,15 +154,6 @@ void Graph::setSTCPProprieties(int i,string code,string name, string zone,double
 
 }
 
-list<string> Graph::getLinesByNode(int i) {
-    list<string> allLines;
-    for(auto e : nodes[i].adj){
-        for(auto line : e.lineCode)
-            allLines.push_back(line);
-    }
-    return allLines;
-}
-
 void Graph::addWalkEdge(double d) {
     GraphMaker graphMaker;
     int count = 0;
@@ -235,24 +167,7 @@ void Graph::addWalkEdge(double d) {
     }
     cout << "added " << count << " walking edges" << endl;
 }
-void Graph::deleteWalkEdge(){
-    int count  = 0;
-    for(int i = 1; i <= n; i++){
-        for(auto& e : nodes[i].adj) {
-            for (auto line: e.lineCode) {
-                if (line == "walk") {
-                    e.lineCode.remove(line);
-                    count ++;
-                    break;
-                }
-            }
-            if(e.lineCode.empty()){
-                nodes[i].adj.remove(e);
-            }
-        }
-    }
-    cout << "deleted " << count << " walking edges" << endl;
-}
+
 
 list<string> Graph::findEgde(int scr, int dest) {
     for(auto e : nodes[scr].adj){
@@ -261,38 +176,4 @@ list<string> Graph::findEgde(int scr, int dest) {
         }
     }
     return {};
-}
-int Graph::isNotVisited(int x,vector<int> &path){
-    int size = path.size();
-    for (int i = 0; i < size; i++)
-        if (path[i] == x)
-            return 0;
-    return 1;
-}
-list<int> Graph::findPath(int init,int end){
-    vector<vector<int>> paths;
-    vector<vector<int>> res;
-    vector<int> path;
-    path.push_back(init);
-    paths.push_back(path);
-    while(!path.empty())
-    {
-        path = paths[0];
-        paths.erase(paths.begin());
-        int last = path[path.size()-1];
-        if(last == end)
-        {
-            res.push_back(path);
-        }
-
-        for(auto e : nodes[last].adj)
-        {
-            if(isNotVisited(e.dest,path)){
-                vector<int> newpath(path);
-                newpath.push_back(e.dest);
-                paths.push_back(newpath);
-            }
-        }
-    }
-    return {} ;
 }

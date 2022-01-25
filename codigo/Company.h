@@ -96,14 +96,13 @@ public:
      * @return the coordenates processed from user input
      */
 
-    pair<int, int> choosePosition();
+    pair<double, double> choosePosition();
     /***
      * 
      * @param stops 
      * @param g 
      * @return the generated lines associated with each transition
      */
-
     list<list<string>> generateLines(list<int> stops,Graph &g);
 };
 

@@ -152,16 +152,17 @@ void Company::shortestPathByDistance_p() {
     pair<double,double> pos2 = choosePosition();
     list<int> initialNodes;
     list<int> finalNodes;
-    for(int i = 1; i < 2487; i++){
-        if(graphMaker.haversine(pos1.first,pos1.second,graph.getNodes()[i].latitiude,graph.getNodes()[i].longitude) < 0.3){
+    cout << "Searching potential initial and final stations..."<< endl;
+    for(int i = 1; i <= 2487; i++){
+        double dist = graphMaker.haversine(pos1.first,pos1.second,graph.getNodes()[i].latitiude,graph.getNodes()[i].longitude);
+        if(dist < 0.3){
             initialNodes.push_back(i);
         }
-    }
-    for(int i = 1; i < 2487; i++){
         if(graphMaker.haversine(pos2.first,pos2.second,graph.getNodes()[i].latitiude,graph.getNodes()[i].longitude) < 0.3){
             finalNodes.push_back(i);
         }
     }
+
     pair<double,list<int>> answer = {LONG_MAX,{}};
     for(int i : initialNodes){
         for(int j : finalNodes){
@@ -181,17 +182,17 @@ void Company::shortestPathByStops_p() {
     pair<double,double> pos2 = choosePosition();
     list<int> initialNodes;
     list<int> finalNodes;
+    cout << "Searching potential initial and final stations..."<< endl;
     for(int i = 1; i < 2487; i++){
         if(graphMaker.haversine(pos1.first,pos1.second,graph.getNodes()[i].latitiude,graph.getNodes()[i].longitude) < 0.3){
             initialNodes.push_back(i);
         }
-    }
-    for(int i = 1; i < 2487; i++){
         if(graphMaker.haversine(pos2.first,pos2.second,graph.getNodes()[i].latitiude,graph.getNodes()[i].longitude) < 0.3){
             finalNodes.push_back(i);
         }
     }
-    pair<int,list<int>> answer = {LONG_MAX,{}};
+
+    pair<int,list<int>> answer = {INT16_MAX,{}};
     for(int i : initialNodes){
         for(int j : finalNodes){
             pair<int,list<int>> res = graph.bfs(i,j);
@@ -209,18 +210,17 @@ void Company::cheapestPath_p() {
     pair<double,double> pos2 = choosePosition();
     list<int> initialNodes;
     list<int> finalNodes;
+    cout << "Searching potential initial and final stations..."<< endl;
     for(int i = 1; i < 2487; i++){
         if(graphMaker.haversine(pos1.first,pos1.second,graph.getNodes()[i].latitiude,graph.getNodes()[i].longitude) < 0.3){
             initialNodes.push_back(i);
         }
-    }
-    for(int i = 1; i < 2487; i++){
         if(graphMaker.haversine(pos2.first,pos2.second,graph.getNodes()[i].latitiude,graph.getNodes()[i].longitude) < 0.3){
             finalNodes.push_back(i);
         }
     }
 
-    pair<int,list<int>> answer = {LONG_MAX,{}};
+    pair<int,list<int>> answer = {INT16_MAX,{}};
     for(int i : initialNodes){
         for(int j : finalNodes){
             pair<int,list<int>> res = graph.dijkstra_changeZone(i,j);
@@ -244,17 +244,17 @@ void Company::walkingAndBusPath_p() {
     newGraph.first.addWalkEdge(dist);
     list<int> initialNodes;
     list<int> finalNodes;
+    cout << "Searching potential initial and final stations..."<< endl;
     for(int i = 1; i < 2487; i++){
         if(graphMaker.haversine(pos1.first,pos1.second,newGraph.first.getNodes()[i].latitiude,newGraph.first.getNodes()[i].longitude) < 0.3){
             initialNodes.push_back(i);
         }
-    }
-    for(int i = 1; i < 2487; i++){
         if(graphMaker.haversine(pos2.first,pos2.second,newGraph.first.getNodes()[i].latitiude,newGraph.first.getNodes()[i].longitude) < 0.3){
             finalNodes.push_back(i);
         }
     }
-    pair<int,list<int>> answer = {LONG_MAX,{}};
+
+    pair<double,list<int>> answer = {LONG_MAX,{}};
     for(int i : initialNodes){
         for(int j : finalNodes){
             pair<double,list<int>> res = newGraph.first.dijkstra_path(i,j);
@@ -271,29 +271,35 @@ void Company::mostConvenientPath_p() {
     GraphMaker graphMaker;
     pair<double,double> pos1 = choosePosition();
     pair<double,double> pos2 = choosePosition();
-    list<int> initialNodes;
-    list<int> finalNodes;
+    list<string> initialNodes;
+    list<string> finalNodes;
+    GraphLine g = graphMaker.lineGraph();
+    cout << "Searching potential initial and final stations..."<< endl;
     for(int i = 1; i < 2487; i++){
         if(graphMaker.haversine(pos1.first,pos1.second,graph.getNodes()[i].latitiude,graph.getNodes()[i].longitude) < 0.3){
-            initialNodes.push_back(i);
+            initialNodes.push_back(graph.getNodes()[i].code);
         }
-    }
-    for(int i = 1; i < 2487; i++){
         if(graphMaker.haversine(pos2.first,pos2.second,graph.getNodes()[i].latitiude,graph.getNodes()[i].longitude) < 0.3){
-            finalNodes.push_back(i);
+            finalNodes.push_back(graph.getNodes()[i].code);
         }
     }
-    GraphLine g = graphMaker.lineGraph();
+
     pair<int,list<int>> answer = {INT16_MAX,{}};
-    for(int i : initialNodes){
-        for(int j : finalNodes){
+    for(string i : initialNodes){
+        for(string j : finalNodes){
             pair<int,list<int>> res = g.howManyChanges(i,j);
             if(res.first < answer.first)
                 answer = res;
         }
     }
 
+    for(auto i : answer.second){
+        cout <<  " --(" + g.getNodes()[i].line + ")-> " + g.getNodes()[i].stop ;
+    }
+    cout << endl;
+    cout << endl << "This paths only contains " << answer.first << " changes of lines" << endl;
 }
+
 void Company::showPath(list<int> res,list<list<string>> lines){
     for(auto i : res)
         cout <<  " --> " + graph.getNodes()[i].code;
@@ -312,12 +318,12 @@ void Company::run() {
     showMainMenu();
 }
 
-pair<int, int> Company::choosePosition() {
+pair<double, double> Company::choosePosition() {
     double latitude,longitude;
     cout << "POSITION:" << endl;
     cout << " Latitude:";
     cin >> latitude;
-    cout << " Longitude:" << endl;
+    cout << " Longitude:";
     cin >> longitude;
     return {latitude,longitude};
 

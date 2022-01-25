@@ -30,15 +30,45 @@ class GraphLine {
 public:
     // Constructor: nr nodes and direction (default: undirected)
     GraphLine(int num, bool dir = false);
+    /***
+     *
+     * @param src
+     * @param dest
+     * adds an edge between src and dest with a "weight" 0 or 1 depending if it represents a change in the current line
+     */
     void addEdge(int src, int dest);
+    /***
+     *
+     * @param i
+     * @param stop
+     * @param line
+     * set the parameters stop and line to the node i
+     */
     void setSTCPProprieties(int i,string stop,string line);
-
-    void changeEdges(string basicString);
-
+    /***
+     *
+     * @param stationCode
+     * add the edges between all the nodes that have the same stationCode
+     */
+    void changeEdges(string stationCode);
+    /***
+     *
+     * @param init
+     * @param end
+     * @return the minimum line changes and the associated path between init and end
+     */
     pair<int, list<int>> dijkstra_changeLines(int init, int end);
-
+    /***
+     *
+     * @param init
+     * @param end
+     * @return the minimum values obtained by the dijkstra_changeLines function
+     */
     pair<int, list<int>> howManyChanges(string init, string end);
-
+    /***
+     *
+     * @return the vector of Nodes of the graph
+     */
     inline vector<Node> getNodes(){return nodes;}
 };
 

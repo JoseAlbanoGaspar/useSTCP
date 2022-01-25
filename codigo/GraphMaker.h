@@ -13,9 +13,24 @@
 class GraphMaker {
 public:
     GraphMaker();
+    /***
+     *
+     * @return general graph with all the connections between stations
+     */
     pair<Graph,unordered_map<string,int>> generalGraph();
+    /***
+     *
+     * @return graph utilized in company functions(mostConvenientPath_s, mostConvenientPath_p)
+     */
     GraphLine lineGraph();
-
+    /***
+     *
+     * @param lat1
+     * @param lon1
+     * @param lat2
+     * @param lon2
+     * @return distance between two points
+     */
     double haversine(double lat1, double lon1, double lat2, double lon2);
 };
 

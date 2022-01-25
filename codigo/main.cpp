@@ -1,5 +1,5 @@
 #include <iostream>
-#include "codigo/Company.h"
+#include "Company.h"
 
 int main() {
     Company c;

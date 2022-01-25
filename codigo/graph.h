@@ -58,7 +58,7 @@ public:
      *
      * @return the number of minimum stops and the path between v and destiny
      */
-    pair<int,list<int>> bfs(int v, int destiny);
+    pair<int,list<int>> bfs(int v, int desitny);
 
     /***
      *

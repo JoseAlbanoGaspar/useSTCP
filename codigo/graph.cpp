@@ -26,9 +26,6 @@ void Graph::addEdge(int src, int dest, double weight,string line) {
     if (!hasDir) nodes[dest].adj.push_back({src, weight});
 }
 
-
-
-
 pair<int,list<int>> Graph::bfs(int v,int destiny) {
     map<int, int> distToV;
     list<int> path;

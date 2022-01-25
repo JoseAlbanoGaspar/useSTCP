@@ -1,0 +1,82 @@
+\hypertarget{_graph_line_8h_source}{}\doxysection{Graph\+Line.\+h}
+\label{_graph_line_8h_source}\index{codigo/GraphLine.h@{codigo/GraphLine.h}}
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{1 \textcolor{comment}{//}}
+\DoxyCodeLine{2 \textcolor{comment}{// Created by josea on 24/01/2022.}}
+\DoxyCodeLine{3 \textcolor{comment}{//}}
+\DoxyCodeLine{4 }
+\DoxyCodeLine{5 \textcolor{preprocessor}{\#ifndef STCPPROJECT\_GRAPHLINE\_H}}
+\DoxyCodeLine{6 \textcolor{preprocessor}{\#define STCPPROJECT\_GRAPHLINE\_H}}
+\DoxyCodeLine{7 }
+\DoxyCodeLine{8 \textcolor{preprocessor}{\#include "{}minHeap.h"{}}}
+\DoxyCodeLine{9 \textcolor{preprocessor}{\#include <vector>}}
+\DoxyCodeLine{10 \textcolor{preprocessor}{\#include <list>}}
+\DoxyCodeLine{11 \textcolor{keyword}{class }\mbox{\hyperlink{class_graph_line}{GraphLine}} \{}
+\DoxyCodeLine{12     \textcolor{keyword}{struct }Edge \{}
+\DoxyCodeLine{13         \textcolor{keywordtype}{int} dest;   \textcolor{comment}{// Destination node}}
+\DoxyCodeLine{14         \textcolor{keywordtype}{int} changeLine; \textcolor{comment}{//weight}}
+\DoxyCodeLine{15     \};}
+\DoxyCodeLine{16 }
+\DoxyCodeLine{17     \textcolor{keyword}{struct }Node \{}
+\DoxyCodeLine{18         list<Edge> adj; \textcolor{comment}{// The list of outgoing edges (to adjacent nodes)}}
+\DoxyCodeLine{19         \textcolor{keywordtype}{int} parent;}
+\DoxyCodeLine{20         \textcolor{keywordtype}{int} distance;}
+\DoxyCodeLine{21         \textcolor{keywordtype}{bool} visited;}
+\DoxyCodeLine{22         \textcolor{keywordtype}{string} stop;}
+\DoxyCodeLine{23         \textcolor{keywordtype}{string} line;}
+\DoxyCodeLine{24     \};}
+\DoxyCodeLine{25 }
+\DoxyCodeLine{26     \textcolor{keywordtype}{int} n;              \textcolor{comment}{// Graph size (vertices are numbered from 1 to n)}}
+\DoxyCodeLine{27     \textcolor{keywordtype}{bool} hasDir;        \textcolor{comment}{// false: undirect; true: directed}}
+\DoxyCodeLine{28     vector<Node> nodes; \textcolor{comment}{// The list of nodes being represented}}
+\DoxyCodeLine{29 }
+\DoxyCodeLine{30 \textcolor{keyword}{public}:}
+\DoxyCodeLine{31     \textcolor{comment}{// Constructor: nr nodes and direction (default: undirected)}}
+\DoxyCodeLine{32     \mbox{\hyperlink{class_graph_line}{GraphLine}}(\textcolor{keywordtype}{int} num, \textcolor{keywordtype}{bool} dir = \textcolor{keyword}{false});}
+\DoxyCodeLine{33 \textcolor{comment}{    /***}}
+\DoxyCodeLine{34 \textcolor{comment}{     *}}
+\DoxyCodeLine{35 \textcolor{comment}{     * @param src}}
+\DoxyCodeLine{36 \textcolor{comment}{     * @param dest}}
+\DoxyCodeLine{37 \textcolor{comment}{     * adds an edge between src and dest with a "{}weight"{} 0 or 1 depending if it represents a change in the current line}}
+\DoxyCodeLine{38 \textcolor{comment}{     */}}
+\DoxyCodeLine{39     \textcolor{keywordtype}{void} addEdge(\textcolor{keywordtype}{int} src, \textcolor{keywordtype}{int} dest);}
+\DoxyCodeLine{40 \textcolor{comment}{    /***}}
+\DoxyCodeLine{41 \textcolor{comment}{     *}}
+\DoxyCodeLine{42 \textcolor{comment}{     * @param i}}
+\DoxyCodeLine{43 \textcolor{comment}{     * @param stop}}
+\DoxyCodeLine{44 \textcolor{comment}{     * @param line}}
+\DoxyCodeLine{45 \textcolor{comment}{     * set the parameters stop and line to the node i}}
+\DoxyCodeLine{46 \textcolor{comment}{     */}}
+\DoxyCodeLine{47     \textcolor{keywordtype}{void} setSTCPProprieties(\textcolor{keywordtype}{int} i,\textcolor{keywordtype}{string} stop,\textcolor{keywordtype}{string} line);}
+\DoxyCodeLine{48 \textcolor{comment}{    /***}}
+\DoxyCodeLine{49 \textcolor{comment}{     *}}
+\DoxyCodeLine{50 \textcolor{comment}{     * @param stationCode}}
+\DoxyCodeLine{51 \textcolor{comment}{     * add the edges between all the nodes that have the same stationCode}}
+\DoxyCodeLine{52 \textcolor{comment}{     */}}
+\DoxyCodeLine{53     \textcolor{keywordtype}{void} changeEdges(\textcolor{keywordtype}{string} stationCode);}
+\DoxyCodeLine{54 \textcolor{comment}{    /***}}
+\DoxyCodeLine{55 \textcolor{comment}{     *}}
+\DoxyCodeLine{56 \textcolor{comment}{     * @param init}}
+\DoxyCodeLine{57 \textcolor{comment}{     * @param end}}
+\DoxyCodeLine{58 \textcolor{comment}{     * @return the minimum line changes and the associated path between init and end}}
+\DoxyCodeLine{59 \textcolor{comment}{     */}}
+\DoxyCodeLine{60     pair<int, list<int>> dijkstra\_changeLines(\textcolor{keywordtype}{int} init, \textcolor{keywordtype}{int} end);}
+\DoxyCodeLine{61 \textcolor{comment}{    /***}}
+\DoxyCodeLine{62 \textcolor{comment}{     *}}
+\DoxyCodeLine{63 \textcolor{comment}{     * @param init}}
+\DoxyCodeLine{64 \textcolor{comment}{     * @param end}}
+\DoxyCodeLine{65 \textcolor{comment}{     * @return the minimum values obtained by the dijkstra\_changeLines function}}
+\DoxyCodeLine{66 \textcolor{comment}{     */}}
+\DoxyCodeLine{67     pair<int, list<int>> howManyChanges(\textcolor{keywordtype}{string} init, \textcolor{keywordtype}{string} end);}
+\DoxyCodeLine{68 \textcolor{comment}{    /***}}
+\DoxyCodeLine{69 \textcolor{comment}{     *}}
+\DoxyCodeLine{70 \textcolor{comment}{     * @return the vector of Nodes of the graph}}
+\DoxyCodeLine{71 \textcolor{comment}{     */}}
+\DoxyCodeLine{72     \textcolor{keyword}{inline} vector<Node> getNodes()\{\textcolor{keywordflow}{return} nodes;\}}
+\DoxyCodeLine{73 \};}
+\DoxyCodeLine{74 }
+\DoxyCodeLine{75 }
+\DoxyCodeLine{76 \textcolor{preprocessor}{\#endif }\textcolor{comment}{//STCPPROJECT\_GRAPHLINE\_H}}
+
+\end{DoxyCode}

@@ -79,6 +79,8 @@ void Company::processKey(char choice){
                     break;
                 case '6':
                     break;
+                default:
+                    break;
             }
         }
     }
@@ -115,11 +117,16 @@ void Company::cheapestPath_s(){
     cout << endl << "This paths only contains " << res.first << " different zones." << endl;
 }
 void Company::mostConvenientPath_s(){
+    GraphMaker graphMaker;
+    GraphLine g = graphMaker.lineGraph();
     string station1 = chooseStation();
     string station2 = chooseStation();
-    graph.findPath(stopMap[station1],stopMap[station2]);
-
-
+    pair<int,list<int>> res = g.howManyChanges(station1,station2);
+    for(auto i : res.second){
+        cout <<  " --(" + g.getNodes()[i].line + ")-> " + g.getNodes()[i].stop ;
+    }
+    cout << endl;
+    cout << endl << "This paths only contains " << res.first << " changes of lines" << endl;
 
 }
 
@@ -141,8 +148,8 @@ void Company::walkingAndBusPath_s(){
 
 void Company::shortestPathByDistance_p() {
     GraphMaker graphMaker;
-    pair<int,int> pos1 = choosePosition();
-    pair<int,int> pos2 = choosePosition();
+    pair<double,double> pos1 = choosePosition();
+    pair<double,double> pos2 = choosePosition();
     list<int> initialNodes;
     list<int> finalNodes;
     for(int i = 1; i < 2487; i++){
@@ -170,8 +177,8 @@ void Company::shortestPathByDistance_p() {
 
 void Company::shortestPathByStops_p() {
     GraphMaker graphMaker;
-    pair<int,int> pos1 = choosePosition();
-    pair<int,int> pos2 = choosePosition();
+    pair<double,double> pos1 = choosePosition();
+    pair<double,double> pos2 = choosePosition();
     list<int> initialNodes;
     list<int> finalNodes;
     for(int i = 1; i < 2487; i++){
@@ -198,8 +205,8 @@ void Company::shortestPathByStops_p() {
 }
 void Company::cheapestPath_p() {
     GraphMaker graphMaker;
-    pair<int,int> pos1 = choosePosition();
-    pair<int,int> pos2 = choosePosition();
+    pair<double,double> pos1 = choosePosition();
+    pair<double,double> pos2 = choosePosition();
     list<int> initialNodes;
     list<int> finalNodes;
     for(int i = 1; i < 2487; i++){
@@ -212,6 +219,7 @@ void Company::cheapestPath_p() {
             finalNodes.push_back(i);
         }
     }
+
     pair<int,list<int>> answer = {LONG_MAX,{}};
     for(int i : initialNodes){
         for(int j : finalNodes){
@@ -225,9 +233,65 @@ void Company::cheapestPath_p() {
     cout << endl << "This paths only contains " << answer.first << " different zones." << endl;
 }
 void Company::walkingAndBusPath_p() {
+    GraphMaker graphMaker;
+
+    pair<double,double> pos1 = choosePosition();
+    pair<double,double> pos2 = choosePosition();
+    double dist;
+    cout << "Max distance you want to walk:";
+    cin >> dist;
+    pair<Graph,unordered_map<string,int>> newGraph = graphMaker.generalGraph();
+    newGraph.first.addWalkEdge(dist);
+    list<int> initialNodes;
+    list<int> finalNodes;
+    for(int i = 1; i < 2487; i++){
+        if(graphMaker.haversine(pos1.first,pos1.second,newGraph.first.getNodes()[i].latitiude,newGraph.first.getNodes()[i].longitude) < 0.3){
+            initialNodes.push_back(i);
+        }
+    }
+    for(int i = 1; i < 2487; i++){
+        if(graphMaker.haversine(pos2.first,pos2.second,newGraph.first.getNodes()[i].latitiude,newGraph.first.getNodes()[i].longitude) < 0.3){
+            finalNodes.push_back(i);
+        }
+    }
+    pair<int,list<int>> answer = {LONG_MAX,{}};
+    for(int i : initialNodes){
+        for(int j : finalNodes){
+            pair<double,list<int>> res = newGraph.first.dijkstra_path(i,j);
+            if(res.first < answer.first)
+                answer = res;
+        }
+    }
+    list<list<string>> takenLines = generateLines(answer.second,newGraph.first);
+    showPath(answer.second,takenLines);
+    cout << endl << "The distance is: " << answer.first << " km." << endl;
 
 }
 void Company::mostConvenientPath_p() {
+    GraphMaker graphMaker;
+    pair<double,double> pos1 = choosePosition();
+    pair<double,double> pos2 = choosePosition();
+    list<int> initialNodes;
+    list<int> finalNodes;
+    for(int i = 1; i < 2487; i++){
+        if(graphMaker.haversine(pos1.first,pos1.second,graph.getNodes()[i].latitiude,graph.getNodes()[i].longitude) < 0.3){
+            initialNodes.push_back(i);
+        }
+    }
+    for(int i = 1; i < 2487; i++){
+        if(graphMaker.haversine(pos2.first,pos2.second,graph.getNodes()[i].latitiude,graph.getNodes()[i].longitude) < 0.3){
+            finalNodes.push_back(i);
+        }
+    }
+    GraphLine g = graphMaker.lineGraph();
+    pair<int,list<int>> answer = {INT16_MAX,{}};
+    for(int i : initialNodes){
+        for(int j : finalNodes){
+            pair<int,list<int>> res = g.howManyChanges(i,j);
+            if(res.first < answer.first)
+                answer = res;
+        }
+    }
 
 }
 void Company::showPath(list<int> res,list<list<string>> lines){
@@ -242,19 +306,10 @@ void Company::showPath(list<int> res,list<list<string>> lines){
 }
 void Company::run() {
     GraphMaker graphMaker;
-    /*pair<Graph,unordered_map<string,int>> graphInfo = graphMaker.generalGraph();
+    pair<Graph,unordered_map<string,int>> graphInfo = graphMaker.generalGraph();
     graph = graphInfo.first;
     stopMap = graphInfo.second;
-    showMainMenu();*/
-    GraphLine g = graphMaker.lineGraph();
-    string station1 = chooseStation();
-    string station2 = chooseStation();
-    pair<int,list<int>> res = g.howManyChanges(station1,station2);
-    for(auto i : res.second){
-        cout <<  " --(" + g.getNodes()[i].line + ")-> " + g.getNodes()[i].stop ;
-    }
-    cout << endl;
-    cout << endl << "This paths only contains " << res.first << " changes of lines" << endl;
+    showMainMenu();
 }
 
 pair<int, int> Company::choosePosition() {

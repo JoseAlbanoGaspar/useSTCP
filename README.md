@@ -18,6 +18,10 @@ For each mode you can insert directly the station where you want to enter and ex
 
 Then the program will compute the best path based on the user input using some graph related algorithms like the Dijkstra algorithm
 
+## More details - presentation
+[See docs](./STCPProject.pdf)
+
+
 ## Developers
 
 - José Albano de Almeida Gaspar, up202008561

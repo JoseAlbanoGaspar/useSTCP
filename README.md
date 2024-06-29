@@ -17,3 +17,10 @@ You can expect 5 different modes:
 For each mode you can insert directly the station where you want to enter and exit or you can use latitude and longitude to tell the program your initial and final position.
 
 Then the program will compute the best path based on the user input using some graph related algorithms like the Dijkstra algorithm
+
+## Developers
+
+- José Albano de Almeida Gaspar, up202008561
+- Maria Eduarda Pacheco Mendes Araújo, up202004473
+- Miguel Ângelo Silva Teixeira, up202005208
+
